@@ -14,3 +14,5 @@ async function connectionDB(){
 }
 
 module.exports = {connectionDB}
+
+////------mongodb+srv://admin:<db_password>@khareedlo.7vfzh.mongodb.net/?retryWrites=true&w=majority&appName=KhareedLo
