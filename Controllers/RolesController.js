@@ -1,6 +1,5 @@
 //--- models
 const { userRoles } = require("../Models/Roles");
-const { userAccounts } = require("../Models/UserAccounts")
 
 //Method  ------------ POST
 //API ------------ http://localhost:5000/role
@@ -24,7 +23,7 @@ async function createRoles(req, res) {
         return res.status(201).send({ "data": req.body })
     }
     else {
-        return res.send({ "error": "Special chracter , extra spaces or numbers are not allowed" })
+        return res.status(500).send({ "error": "Special chracter , extra spaces or numbers are not allowed" })
     }
 }
 
@@ -52,9 +51,9 @@ try {
     //Finding Role
     const findRole = await userRoles.find({ Role_Name : req.params.id.toLowerCase() });
 // If not exist
-if(findRole.length<=0) return res.send({"error" : "Not Found"})
+if(findRole.length<=0) return res.status(404).send({"error" : "Not Found"})
 
-    const deleteRole = await userRoles.deleteOne({Role_Name : req.params.id})
+    const deleteRole = await userRoles.deleteOne({Role_Name : req.params.id.toLowerCase()})
     return res.status(200).send({ "message": "Delete Roles" })
 } catch (error) {
     console.log(error)
@@ -75,7 +74,7 @@ try {
     //Finding Role
     const oldRoleData = await userRoles.find({ Role_Name : UpdateRoleID.toLowerCase() });
 // If not exist
-if(oldRoleData.length<=0) return res.send({"error" : "User Role Not Found"})
+if(oldRoleData.length<=0) return res.status(404).send({"error" : "User Role Not Found"})
 
   //Role new data
   const {Role_Name ,Status} = req.body
@@ -87,7 +86,6 @@ const UpdateRole = await userRoles.updateOne(
     },
     {
         $set : {
-            Role_Name : Role_Name.toLowerCase() ,
             Status
         }
     }
