@@ -12,19 +12,29 @@ async function createRoles(req, res) {
   // No spaces or spcial characters or numbers
     const roleName_Checker = /^[A-Za-z]+$/;
 
-    if (roleName_Checker.test(Role_Name)) {
-        if (roleExists.length > 0) return res.send({ "error": "Role Already Exists" })
-        const newRole = await userRoles.create(
+    // if (roleName_Checker.test(Role_Name)) {
+        if (roleExists.length > 0) return res.status(500).send({ "error": "Role Already Exists" })
+            try {
+                const newRole = await userRoles.create(
             {
                 Role_Name: Role_Name.toLowerCase(),
                 Status: Status
             }
         )
+
         return res.status(201).send({ "data": req.body })
-    }
-    else {
-        return res.status(500).send({ "error": "Special chracter , extra spaces or numbers are not allowed" })
-    }
+            } catch (error) {
+                // if(error.name == "ValidationError"){
+
+                    return res.status(204).send({"error" : error.errors})
+                
+                
+            }
+        
+    // }
+    // else {
+    //     return res.status(500).send({ "error": "Special chracter , extra spaces or numbers are not allowed" })
+    // }
 }
 
 
@@ -49,11 +59,11 @@ async function deleteRoles(req, res) {
 
 try {
     //Finding Role
-    const findRole = await userRoles.find({ Role_Name : req.params.id.toLowerCase() });
+    const findRole = await userRoles.find({ _id : req.params.id });
 // If not exist
 if(findRole.length<=0) return res.status(404).send({"error" : "Not Found"})
 
-    const deleteRole = await userRoles.deleteOne({Role_Name : req.params.id.toLowerCase()})
+    const deleteRole = await userRoles.deleteOne({_id : req.params.id})
     return res.status(200).send({ "message": "Delete Roles" })
 } catch (error) {
     console.log(error)
@@ -72,7 +82,7 @@ async function updateRoles(req, res) {
  const UpdateRoleID = req.params.id
 try {
     //Finding Role
-    const oldRoleData = await userRoles.find({ Role_Name : UpdateRoleID.toLowerCase() });
+    const oldRoleData = await userRoles.find({ _id : UpdateRoleID.toLowerCase() });
 // If not exist
 if(oldRoleData.length<=0) return res.status(404).send({"error" : "User Role Not Found"})
 
@@ -82,10 +92,11 @@ if(oldRoleData.length<=0) return res.status(404).send({"error" : "User Role Not 
 
 const UpdateRole = await userRoles.updateOne(
     {
-        "Role_Name" : oldRoleData[0].Role_Name
+        "_id" : oldRoleData[0]._id
     },
     {
         $set : {
+            Role_Name : Role_Name.toLowerCase() ,
             Status
         }
     }

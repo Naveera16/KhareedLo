@@ -1,13 +1,15 @@
 const express = require("express");
 const app = express();
 
-
+const cors = require("cors")
 // -------- env
 require("dotenv").config()
  
 // --------- MIDDLEWEARS
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
+app.use(cors());
+
 
 //------------DB
 const {connectionDB} = require("./Config/Database")
