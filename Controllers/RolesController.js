@@ -12,7 +12,7 @@ async function createRoles(req, res) {
   // No spaces or spcial characters or numbers
     const roleName_Checker = /^[A-Za-z]+$/;
 
-    // if (roleName_Checker.test(Role_Name)) {
+    if (roleName_Checker.test(Role_Name)) {
         if (roleExists.length > 0) return res.status(500).send({ "error": "Role Already Exists" })
             try {
                 const newRole = await userRoles.create(
@@ -31,10 +31,10 @@ async function createRoles(req, res) {
                 
             }
         
-    // }
-    // else {
-    //     return res.status(500).send({ "error": "Special chracter , extra spaces or numbers are not allowed" })
-    // }
+    }
+    else {
+        return res.status(500).send({ "error": "Special chracter , extra spaces or numbers are not allowed" })
+    }
 }
 
 
